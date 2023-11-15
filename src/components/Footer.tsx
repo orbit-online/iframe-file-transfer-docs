@@ -122,14 +122,11 @@ function SmallPrint() {
 				reserved.
 			</p>
 			<div className="flex gap-4">
-				<SocialLink href="#" icon={TwitterIcon}>
-					Follow us on Twitter
-				</SocialLink>
-				<SocialLink href="#" icon={GitHubIcon}>
+				<SocialLink
+					href="https://github.com/orbit-online"
+					icon={GitHubIcon}
+				>
 					Follow us on GitHub
-				</SocialLink>
-				<SocialLink href="#" icon={DiscordIcon}>
-					Join our Discord server
 				</SocialLink>
 			</div>
 		</div>
