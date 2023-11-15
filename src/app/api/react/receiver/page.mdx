@@ -298,7 +298,7 @@ return (
 );
 ```
 
-### `orbitEntityData` {{ tag: 'OUTPUT', label: 'Rcord<string, any>' }}
+### `orbitEntityData` {{ tag: 'OUTPUT', label: 'Record<string, any>' }}
 
 Meta about the, entity and the user that uploaded the file, sent from Orbit a long with the file. The `orbitEntityData` is available when `state` is `transfering` or `complete`.
 
@@ -352,9 +352,9 @@ Current status of the transmission from the sender to the receiver.
 
 Possible values are `initial`, `transfering`, `complete` and `error`.
 
--   When `status` is `initial`, [`file`](#file), [`error`](#error), [`orbitFileId`](#orbitFileId) and [`progress`](#progress) are all `null` and has no value.
+-   When `status` is `initial`, [`file`](#file), [`error`](#error), [`orbitFileId`](#orbit-file-id) and [`progress`](#progress) are all `null` and has no value.
 -   When `status` is `error`, the [`error`](#error) property of the hook has a value.
--   When `status` is `transfering`, the [`orbitFileId`](#orbitFileId), [`progress`](#progress) has values.
--   When `status` is `complete`, the [`file`](#file) property has a value, `imageSrc` has a value if the file is an image supported by the browser.
+-   When `status` is `transfering`, the [`orbitFileId`](#orbit-file-id), [`progress`](#progress) has values.
+-   When `status` is `complete`, the [`file`](#file) property has a value, [`imageSrc`](#image-src) has a value if the file is an image supported by the browser.
 
-[`file`](#file) contains a browser/DOM [File](https://developer.mozilla.org/en-US/docs/Web/API/File) when the transfering from the sender (host/Orbit web client) is complete.
+[`file`](#file) contains a browser/DOM [File](https://developer.mozilla.org/en-US/docs/Web/API/File) when the transfer from the sender (host/Orbit web client) is complete.

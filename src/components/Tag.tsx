@@ -35,6 +35,8 @@ const valueColorMap = {
 	DELETE: 'rose',
 	INPUT: 'amber',
 	OUTPUT: 'sky',
+	OPTIONAL: 'sky',
+	REQUIRED: 'rose',
 } as Record<string, keyof typeof colorStyles>;
 
 export function Tag({
