@@ -16,7 +16,7 @@ const withMDX = nextMDX({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	output: 'export',
-	basePath: '/iframe-file-transfer-docs',
+	basePath: '/iframe-file-transfer',
 	pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
 	reactStrictMode: true,
 	images: {
