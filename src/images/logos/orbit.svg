@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink" id="orbit-logo" width="48px" height="48px" alt="Orbit" version="1.1" viewBox="-1500 -1500 3000 3000">
+	<defs>
+		<circle id="ring-boundary" r="1356"/>
+		<circle id="hexagon-hole" r="960"/>
+		<circle id="disc" r="1340"/>
+		<g id="hexagon-sixth">
+			<path id="hexagon-twelfth" d="M 0 0 L -1495 0 C -1497 -79, -1465 -185, -1436 -243 L -1173 -682 L -831 -480 Z"/>
+			<use transform="scale(1 -1) rotate(-60)" xlink:href="#hexagon-twelfth"/>
+		</g>
+		<use id="ring-top" transform="translate(3 11) rotate(-17) scale(1 0.31)" xlink:href="#disc"/>
+	</defs>
+	<mask id="hexagon-mask">
+		<circle r="1495" fill="white"/>
+		<use fill="black" xlink:href="#ring-top"/>
+		<use fill="black" xlink:href="#hexagon-hole"/>
+	</mask>
+	<mask id="planet-outline-mask">
+		<use fill="white" xlink:href="#ring-boundary"/>
+		<use fill="black" xlink:href="#ring-top"/>
+		<use fill="white" transform="translate(-65 -214) rotate(-17) scale(1 0.31)" xlink:href="#disc"/>
+	</mask>
+	<mask id="ring-mask">
+		<use fill="white" xlink:href="#ring-boundary"/>
+		<use fill="black" xlink:href="#ring-top"/>
+	</mask>
+	<g fill="rgba(44, 165, 222, 1)">
+		<g stroke="rgba(44, 165, 222, 1)" stroke-width="35" mask="url(#hexagon-mask)">
+			<use transform="rotate(0)" xlink:href="#hexagon-sixth"/>
+			<use transform="rotate(60)" xlink:href="#hexagon-sixth"/>
+			<use transform="rotate(120)" xlink:href="#hexagon-sixth"/>
+			<use transform="rotate(180)" xlink:href="#hexagon-sixth"/>
+			<use transform="rotate(240)" xlink:href="#hexagon-sixth"/>
+			<use transform="rotate(300)" xlink:href="#hexagon-sixth"/>
+		</g>
+		<use fill="transparent" stroke="rgba(44, 165, 222, 1)" stroke-width="115" mask="url(#planet-outline-mask)" xlink:href="#hexagon-hole"/>
+		<g mask="url(#ring-mask)">
+			<rect id="ring-side" width="2680" height="172" transform="translate(-1230 559) rotate(-17) scale(1 -0.95)"/>
+			<use id="ring-side-curve" transform="translate(51 168) rotate(-17) scale(1 0.31)" xlink:href="#disc"/>
+		</g>
+	</g>
+</svg>

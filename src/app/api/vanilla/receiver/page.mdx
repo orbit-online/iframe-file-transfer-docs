@@ -1,0 +1,383 @@
+import { HeroPattern } from '@/components/HeroPattern';
+
+export const metadata = {
+	title: 'API vanilla/receiver',
+	description:
+		'Documentation for the vanilla JS declarative HTML abstraction of the iframe file transfer receiver API.',
+};
+
+<HeroPattern />
+
+# Vanilla receiver API (declarative HTML)
+
+Receivers are responsible for listening to file transfer events, and sending complete or cancel events back to the host, along with facilitating a place for error messages can appear to users in case anything should go wrong. {{ className: 'lead' }}
+
+## Responsibility
+
+As an implementor of a receiver you are responsible for providing a form submit handler that uploads the file along with form- and metadata to a webservice, and return a resolved promised upon success or rejected promise upon error.
+
+Files are transfered to the receiver along with an unique id, that is important in order to be able to update the file in Orbit afterwards via the Orbit Import Framework.
+
+## HTML `[data-attributes]`
+
+This API is based on HTML `[data-*]` attributes for specifing which input fields that should be used by the receiver. The following attributes are sorted after "mandatory, name", all mandatory attributes are marked with a trailing `*`.
+The attributes below should be read as CSS selectors, that can be passed to [`document.querySelector()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector).
+
+<Properties>
+	<Property
+		anchor={true}
+		name="form[data-orbit-file-receiver=submitHandler]"
+		type="*<form>"
+	>
+		The `submitHandler` is a function name that lives in global scope at
+		initialization time.
+	</Property>
+	<Property
+		anchor={true}
+		name="input[data-orbit-file-receiver-file-id]"
+		type="*<input>"
+	>
+		Input element containing the unique file id provided by the sender.
+	</Property>
+	<Property
+		anchor={true}
+		name="input[data-orbit-file-receiver-input]"
+		type={`*<input type="file">`}
+	>
+		The file input element that contains the file to be uploaded.
+	</Property>
+	<Property
+		anchor={true}
+		name="[data-orbit-file-receiver-error-container]"
+		type="*"
+	>
+		Error message container, that contains error messages the users should be aware of.
+	</Property>
+	<Property
+		anchor={true}
+		name="input[data-orbit-file-receiver-cancel]"
+		type={`<input type="button">`}
+	>
+		Optional cancel button, to tell the sender/host that the user has cancelled the file transfer/upload.
+	</Property>
+	<Property
+		anchor={true}
+		name="[data-orbit-file-receiver-entity-data]"
+		type={`<pre>`}
+	>
+		Optional entity data element, mostly useful for debugging/development purposes.
+	</Property>
+	<Property
+		anchor={true}
+		name="input[data-orbit-file-receiver-entity-data-value=<entityDataProperty>]"
+		type={`<input>`}
+	>
+		Optional entity data value input element, for data-binding metadata data.
+	</Property>
+	<Property
+		anchor={true}
+		name="img[data-orbit-file-receiver-image]"
+		type={`<img>`}
+	>
+		Optional preview image element for displaying when transfering an image file.
+	</Property>
+	<Property
+		anchor={true}
+		name="progress[data-orbit-file-receiver-progress]"
+		type={`<progress>`}
+	>
+		Optional progress element to display progress of the file transfer between the sender and the receiver (iframe).
+	</Property>
+
+</Properties>
+
+---
+
+### `form[data-orbit-file-receiver=submitHandler]`
+
+<Row>
+	<Col>
+		This attributes must be set on a `<form />` element that should be
+		submitted to the external web service with the binary file along with
+		the metadata fields that lives within the form element. The
+		submitHandler is a function name that lives in global scope at
+		initialization time.
+	</Col>
+	<Col sticky>
+		<CodeGroup title="Form and submit handler declaration">
+		```html
+		<script type="module">
+			globalThis.onSubmit = async (url, method, formData, entityData) => {
+				await fetch(...)
+			}
+		</script>
+		<form
+			data-orbit-file-receiver="onSubmit"
+			action="/upload"
+			enctype="multipart/form-data"
+			method="post"
+		>
+			...
+		</form>
+		```
+		</CodeGroup>
+	</Col>
+</Row>
+
+### `input[data-orbit-file-receiver-file-id]`
+
+<Row>
+	<Col>
+		This part of the API contains the unique id of the file coming from
+		Orbit that should be sent against the File importer API in order to
+		update the placeholder file in Orbit with the processed data. If you
+		don't want the user to be aware of this information you can set the
+		input type to `type=hidden`, the name attribute represents the key the
+		value will be submitted as (provided in the formData variable in the
+		`submitHandler`). In the example below `formData` will contain the
+		unique file id at the key named `orbitFileId`.
+	</Col>
+	<Col sticky>
+		<CodeGroup title="File id input element">
+			```html
+			<input
+				data-orbit-file-receiver-file-id
+				name="orbitFileId"
+				type="hidden"
+			/>
+			```
+		</CodeGroup>
+	</Col>
+</Row>
+
+### `input[data-orbit-file-receiver-input]`
+
+<Row>
+	<Col>
+		The receiver input attribute represents the file sent from the sender.
+		At initialization time the input must be of `type=file` it will get converted to a `<input type=text disabled />` element with the name preserved.
+		The `[name]` attribute represents the key for the file lives when the form get submitted.
+	</Col>
+	<Col sticky>
+		<CodeGroup title="File input before initialization">
+			```html
+			<input
+				data-orbit-file-receiver-input
+				name="file"
+				type="file"
+			/>
+			```
+		</CodeGroup>
+		<CodeGroup title="File input after initialization">
+			```html
+			<input
+				data-orbit-file-receiver-input
+				name="file"
+				type="text"
+				value="filename.jpg"
+				disabled
+			/>
+			```
+		</CodeGroup>
+	</Col>
+</Row>
+
+### `[data-orbit-file-receiver-error-container]`
+
+<Row>
+	<Col>
+		An element that will "host" any errors that might occur, any element
+		will do here, typically a `<div />
+		`. This element will be hidden (`display: none`) at initialization time and
+		will restore the display value when an error occurs. If the value was none
+		at initialization time, it will be set to `display: initial`. This can cause
+		layout problems, in those cases you can set the `[data-display]` attribute
+		to determine the `display` value when an error occurs.
+
+    	In this example, the
+    	element will be hidden at initialization time, and will appear with `display:
+    	inline-block` when an error occurs.
+    </Col>
+    <Col sticky>
+    	<CodeGroup title="Error container element">
+    		```html
+    		<div
+    			data-orbit-file-receiver-error-container
+    			data-display="inline-block"
+    		/>
+    		```
+    	</CodeGroup>
+    </Col>
+
+</Row>
+
+### `input[data-orbit-file-receiver-cancel]`
+
+<Row>
+	<Col>
+		Optional element, it is fine to omit this element/attribute. However if
+		you include a cancel button it must be a `<input type="button" />`
+		element and not a `<button />` element as all buttons that live within a
+		`<form />` element, submits the form, but `<input type="button" />` does
+		not.
+
+    	This example will render a button containing the text: Cancel.
+    </Col>
+    <Col sticky>
+    	<CodeGroup title="Error container element">
+    		```html
+    		<input
+    			data-orbit-file-receiver-cancel
+    			type="button"
+    			value="Cancel"
+    		/>
+    		```
+    	</CodeGroup>
+    </Col>
+
+</Row>
+
+### `[data-orbit-file-receiver-entity-data]`
+
+<Row>
+	<Col>
+    This optional element will is for debugging perposes. It will show a JSON representation of the data received from the sender as entity data available for rendering via the `[data-orbit-file-receiver-entity-data-value=<entityDataProperty>]` attribute.
+    If you render an `<input name="..." />` element with this attribute, it will be included in the `formData` in the submit handler, and thus automatically included in the request when the form is submitted.
+
+    **Note** Beware that disabled input fields will be discarded from the `formData` variable in the submit handler, and thus not automatically be included in the request when the form is submitted. It is recommended if you want to include the data, that you use `[readonly]` instead of `[disabled]` when the data needs to be included in the form submission reuquest.
+
+    The example above will not be editable by the user and the data will automatically included in the form submission request on the key `externalId`.
+    </Col>
+    <Col sticky>
+    	<CodeGroup title="Entity data input element">
+    	```html
+    	<input
+    		data-orbit-file-receiver-entity-data-value="externalId"
+    		name="projectName"
+    		readonly
+    	/>
+    	```
+    	</CodeGroup>
+    </Col>
+
+</Row>
+
+### `input[data-orbit-file-receiver-entity-data-value=<entityDataProperty>]`
+
+<Row>
+	<Col>
+    You can map values from entity data transfered from the via this API.
+
+    Consider the following entity data transmitted by the sender.
+    </Col>
+    <Col sticky>
+    	<CodeGroup title="Entity data from the sender">
+    	```json
+    	{ "projectName": "Large construction enterprise" }
+    	```
+    	</CodeGroup>
+    </Col>
+
+</Row>
+
+&nbsp;
+
+<Row>
+	<Col>
+		It can be referenced and automatically be filled out with this data
+		attribute:
+
+    **Note** If you use the disabled attribute, the input field won't appear in the data, when the form is submitted.
+
+    </Col>
+    <Col sticky>
+    	<CodeGroup title="Input element selecting a proprety from the entity data">
+    		```html
+    		<input
+    			data-orbit-file-receiver-entity-data-value="projectName"
+    			readonly
+    		/>
+    		```
+    	</CodeGroup>
+    </Col>
+
+</Row>
+
+&nbsp;
+
+<Row>
+	<Col>
+    You can reference nested data too.
+
+    This is a great/easy way of automatically getting meta information submitted along the form,
+    if the user should be presented with the information, you can still use this API just by declaring the input fields `type=hidden`, this can however also be accomplised by accessing the `orbitEntityData` in the submit handler, and populate the `formData` data from there.
+    </Col>
+    <Col sticky>
+    	<CodeGroup title="Nested data from the sender">
+    	```json
+    	{
+    		"user": {
+    			"name": "John Doe",
+    			"email": "john@doe.org"
+    		}
+    	}
+    	```
+    	</CodeGroup>
+
+    	<CodeGroup title="Input element selecting a nested property from the entity data">
+    	```html
+    	<input
+    		data-orbit-file-receiver-entity-data-value="user.name"
+    		name="uploaderName"
+    		readonly
+    	/>
+    	<input
+    		data-orbit-file-receiver-entity-data-value="user.email"
+    		name="uploaderEmail"
+    		readonly
+    	/>
+    	```
+    	</CodeGroup>
+    </Col>
+
+</Row>
+
+### `img[data-orbit-file-receiver-image]`
+
+<Row>
+	<Col>
+		You can present a preview of the image (if the file as an image mimetype and is supported by the browser), the user is uploading with this data-attribute.
+
+    	**Note** This API will set the `img.style.display = 'block'` once the transfer is complete, which can give layout issues if not taken into account.
+    </Col>
+    <Col sticky>
+    	<CodeGroup title="Image element to display preview when an image is transfered">
+    	```html
+    	<img
+    		data-orbit-file-receiver-image
+    		src=""
+    	/>
+    	```
+    	</CodeGroup>
+    </Col>
+
+</Row>
+
+### `progress[data-orbit-file-receiver-progress]`
+
+<Row>
+	<Col>
+    Progress bar for transfering the file from the sender to the receiver (iframe).
+    Mostly useful for debugging purposes, to see if chunks are in deed getting transmitted and receieved, but maybe be corrupted along the away. Often the transmission happens so fast, that
+    the progress jumps from `0` to `100` at once. However if the files are large enough it can make sense to utilize to give the users visual feedback that "something is happening".
+	</Col>
+    <Col sticky>
+
+    	<CodeGroup title="">
+    	```html
+    	<progress min="0" max="100" data-orbit-file-receiver-progress></progress>
+    	```
+    	</CodeGroup>
+    </Col>
+
+</Row>

@@ -1,0 +1,129 @@
+import { HeroPattern } from '@/components/HeroPattern';
+
+export const metadata = {
+	title: 'API react/receiver',
+	description: 'Documentation of the low-level APIs, the high level abstractions are built upon.'
+
+}
+
+<HeroPattern />
+
+# React receiver API
+
+The react API is mostly reduced to a single hook, where the only that is needed to be passed to the hook is `submitHandler` and an `errorHandler`. {{ className: 'lead' }}
+
+## Responsibility
+
+As an implementor of a receiver you are responsible for providing a form submit handler that uploads the file along with form- and metadata to a webservice, and return a resolved promised upon success or rejected promise upon error.
+
+Files are transfered to the receiver along with an unique id, that is important in order to be able to update the file in Orbit afterwards via the Orbit Import Framework.
+
+## Minimum working application
+
+Will take a look at this bare minimum example below, and explain the API in terms of this simplified usage.
+
+```tsx
+import { useOrbitIframeFileTransferReceiver } from '@orbit-online/iframe-file-transfer/react/receiver.js';
+
+async function onOrbitFileReceiverFormSubmit(
+	url: string,
+	method: string,
+	formData: FormData,
+	orbitEntityData: Record<string, any>,
+): Promise<void> {
+	const request = new Request(url, {
+		body: formData,
+		method: method,
+	});
+
+	const response = await fetch(request);
+	if (!response.ok) {
+		throw new Error(
+			'Upload was unsuccesful, please contact external system administrator at support@external.system with details on how to reproduce this error.',
+		);
+	}
+}
+
+const App = () => {
+	const {
+		error,
+		file,
+		fileInputRef,
+		formRef,
+		imageSrc,
+		onCancel,
+		onSubmit,
+		orbitEntityData,
+		orbitFileId,
+		progress,
+		setError,
+	} = useOrbitIframeFileTransferReceiver(onOrbitFileReceiverFormSubmit);
+
+	const errorContainer =
+		error == null ? null : (
+			<div style={errorContainerStyles}>{error.message}</div>
+		);
+	return (
+		<form
+			action="/upload"
+			encType="multipart/form-data"
+			method="post"
+			onSubmit={onSubmit}
+			ref={formRef}
+		>
+			{errorContainer}
+			<input
+				type="hidden"
+				name="orbitFileId"
+				ref={fileIdInputRef}
+				value={orbitFileId}
+				readOnly
+				required
+			/>
+			<input
+				type="text"
+				name="file"
+				ref={fileInputRef}
+				value={file?.name}
+				disabled
+				required
+			/>
+			<input type="button" value="Cancel" onClick={onCancel} />
+			<input type="submit" value="Upload" />
+		</form>
+	);
+};
+```
+
+---
+
+## The hook
+
+<Row>
+	<Col>
+		<Properties>
+			<Property name="hans" type="" >Hans</Property>
+    	</Properties>
+    </Col>
+    <Col sticky>
+    	<CodeGroup title="">
+    	```tsx
+    	type SubmitHandler = (url: string, method: string, formData: FormData, orbitEntityData: Record<string, any>) => Promise<void>;
+    	function useOrbitIframeFileTransferReceiver(submitHandler: SubmitHandler): {
+    		readonly error: Maybe<Error>,
+    		readonly file: Maybe<File>,
+    		readonly fileInputRef: React.RefObject<HTMLInputElement>,
+    		readonly formRef: React.RefObject<HTMLFormElement>,
+    		readonly imageSrc: string | undefined,
+    		readonly onCancel: () => void,
+    		readonly onSubmit: (url: string, method: string, formData: FormData, orbitEntityData: React<string, any>) => Promise<unknown>,
+    		readonly orbitEntityData: state.initMessage?.entityData ?? {},
+    		readonly orbitFileId: string | undefined,
+    		readonly progress: string | undefined,
+    		readonly setError: (err: Error) => void,
+    		readonly status: 'initial' | 'transfering' | 'complete' | 'error',
+    	};
+    	```
+    	</CodeGroup>
+    </Col>
+</Row>

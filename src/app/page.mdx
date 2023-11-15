@@ -1,0 +1,41 @@
+import { Concepts } from '@/components/Concepts';
+// import { Resources } from '@/components/Resources';
+import { HeroPattern } from '@/components/HeroPattern';
+
+export const metadata = {
+	title: 'Introduction - Iframe file transfer - Orbit Online A/S',
+	description:
+		'Learn how to integrate assets origining in Orbit into you digital assets management system.',
+};
+
+export const sections = [
+	{ title: 'Concepts', id: 'concepts' },
+	{ title: 'Resources', id: 'resources' },
+];
+
+<HeroPattern />
+
+# Introduction
+
+This library is typically used for transfering files, users has provided via input fields in the Orbit web client, to iframes hosted by 3rd parties. {{ className: 'lead' }}
+
+<div className="not-prose mb-16 mt-6 flex gap-3">
+	<Button href="/getting-started" arrow="right">
+		<>Getting started</>
+	</Button>
+	<Button href="/libraries" variant="outline">
+		<>Libraries</>
+	</Button>
+</div>
+
+## How does it work {{ anchor: false }}
+
+Browsers doesn't simply allow moving the protected File objects between browser contexts. It seems that ServiceWorkers support this to some extent, but it is not supported in iframes. {{ className: 'lead' }}
+
+<div className="not-prose">
+	<Button href="/sdks" variant="text" arrow="right">
+		<>Get your API key</>
+	</Button>
+</div>
+
+<Concepts />
