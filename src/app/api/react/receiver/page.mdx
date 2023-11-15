@@ -30,7 +30,7 @@ async function onOrbitFileReceiverFormSubmit(
 	method: string,
 	formData: FormData,
 	orbitEntityData: Record<string, any>,
-): Promise<void> {
+): Promise<unknown> {
 	const request = new Request(url, {
 		body: formData,
 		method: method,
@@ -45,50 +45,38 @@ async function onOrbitFileReceiverFormSubmit(
 }
 
 const App = () => {
-	const {
-		error,
-		file,
-		fileInputRef,
-		formRef,
-		imageSrc,
-		onCancel,
-		onSubmit,
-		orbitEntityData,
-		orbitFileId,
-		progress,
-		setError,
-	} = useOrbitIframeFileTransferReceiver(onOrbitFileReceiverFormSubmit);
+	const receiver = useOrbitIframeFileTransferReceiver(
+		onOrbitFileReceiverFormSubmit,
+	);
 
 	const errorContainer =
-		error == null ? null : (
-			<div style={errorContainerStyles}>{error.message}</div>
-		);
+		receiver.error == null ? null : <div>{receiver.error.message}</div>;
 	return (
 		<form
 			action="/upload"
 			encType="multipart/form-data"
 			method="post"
-			onSubmit={onSubmit}
-			ref={formRef}
+			onSubmit={receiver.onSubmit}
+			ref={receiver.formRef}
 		>
 			{errorContainer}
 			<input
 				type="hidden"
 				name="orbitFileId"
-				ref={fileIdInputRef}
-				value={orbitFileId}
+				ref={receiver.fileIdInputRef}
+				value={receiver.orbitFileId}
 				readOnly
 				required
 			/>
 			<input
 				type="text"
 				name="file"
-				ref={fileInputRef}
-				value={file?.name}
+				ref={receiver.fileInputRef}
+				value={receiver.file?.name}
 				disabled
 				required
 			/>
-			<input type="button" value="Cancel" onClick={onCancel} />
+			<input type="button" value="Cancel" onClick={receiver.onCancel} />
 			<input type="submit" value="Upload" />
 		</form>
 	);
@@ -101,54 +89,62 @@ const App = () => {
 
 <Row>
 	<Col>
+		### Input arguments
 		<Properties>
-			<Property name="formRef" type="React.RefObject<HTMLFormElement>">
-				Ref object that should be passed to the `ref` prop of the form element.
+			<Property anchor={true} name="submitHandler" type="SubmitHandler">
+				The submit handler
 			</Property>
-			<Property name="onSubmit" type="React.FormEventHandler<HTMLFormElement>">
-				Form submit handler, should be passed along to the a `onSubmit` of the form element.
-			</Property>
-			<Property name="error" type="Error | null">
-				Property containing the error that occured, or `null` if no error has occured.
-			</Property>
-			<Property name="file" type="File | null">
-				The file that has been transfered to the receiver (iframe). This is prop is `null` ontil the `status` is `complete`.
-			</Property>
-			<Property name="fileInputRef" type="React.RefObject<HTMLInputElement>">
-				Ref object that should be passed to the file id input element.
-			</Property>
-			<Property name="imageSrc" type="string | undefined">
-				Image source that can be passed to an img element, is only available when the file transfer is complete and the content is an image the browser supports.
-			</Property>
-			<Property name="onCancel" type="React.MouseEventHandler<HTMLInputElement>">
-				Cancel handler that should be passed to the `onClick` prop of an input element of type button,
-				to support the users can cancel the file transfer.
-			</Property>
-			<Property name="orbitEntityData" type="Record<string, any>">
-				Metadata about the entity the file is uploaded within Orbit.
-			</Property>
-			<Property name="orbitFileId" type="string | undefined">
-				The unique external file id from Orbit, that should be passed to the Orbit files importer, when the file content has been uploaded and processed by the external system, and the file should be updated in Orbit with the processed content.
-			</Property>
-			<Property name="progress" type="number | undefined">
-				Percentage of file transfer progress from the sender to the receiver.
-			</Property>
-			<Property name="setError" type="SetErrFn">
-				Error hook, if the react application want to communicate back to Orbit that a 3rd party error occured,
-				this will populate the `error` property, and set the `status` property to `error` as well.
-			</Property>
-			<Property name="status" type="initial | transfering | complete | error">
-				The current status of the file transfer from the sender to the receiver.
-				- `initial` when connection to the sender has not yet been established.
-				- `transfering` when the connection has been established, and transmission is running.
-			</Property>
+		</Properties>
+
+    	### Output object properties
+    	<Properties>
+    		<Property anchor={true} name="formRef" type="React.RefObject<HTMLFormElement>">
+    			Ref object that should be passed to the `ref` prop of the form element.
+    		</Property>
+    		<Property anchor={true} name="onSubmit" type="React.FormEventHandler<HTMLFormElement>">
+    			Form submit handler, should be passed along to the a `onSubmit` of the form element.
+    		</Property>
+    		<Property anchor={true} name="error" type="Error | null">
+    			Property containing the error that occured, or `null` if no error has occured.
+    		</Property>
+    		<Property anchor={true} name="file" type="File | null">
+    			The file that has been transfered to the receiver (iframe). This is prop is `null` ontil the `status` is `complete`.
+    		</Property>
+    		<Property anchor={true} name="fileInputRef" type="React.RefObject<HTMLInputElement>">
+    			Ref object that should be passed to the file id input element.
+    		</Property>
+    		<Property anchor={true} name="imageSrc" type="string | undefined">
+    			Image source that can be passed to an img element, is only available when the file transfer is complete and the content is an image the browser supports.
+    		</Property>
+    		<Property anchor={true} name="onCancel" type="React.MouseEventHandler<HTMLInputElement>">
+    			Cancel handler that should be passed to the `onClick` prop of an input element of type button,
+    			to support the users can cancel the file transfer.
+    		</Property>
+    		<Property anchor={true} name="orbitEntityData" type="Record<string, any>">
+    			Metadata about the entity the file is uploaded within Orbit.
+    		</Property>
+    		<Property anchor={true} name="orbitFileId" type="string | undefined">
+    			The unique external file id from Orbit, that should be passed to the Orbit files importer, when the file content has been uploaded and processed by the external system, and the file should be updated in Orbit with the processed content.
+    		</Property>
+    		<Property anchor={true} name="progress" type="number | undefined">
+    			Percentage of file transfer progress from the sender to the receiver.
+    		</Property>
+    		<Property anchor={true} name="setError" type="SetErrorFn">
+    			Error hook, if the react application want to communicate back to Orbit that a 3rd party error occured,
+    			this will populate the `error` property, and set the `status` property to `error` as well.
+    		</Property>
+    		<Property anchor={true} name="status" type="initial | transfering | complete | error">
+    			The current status of the file transfer from the sender to the receiver.
+    			- `initial` when connection to the sender has not yet been established.
+    			- `transfering` when the connection has been established, and transmission is running.
+    		</Property>
     	</Properties>
     </Col>
     <Col sticky>
     	<CodeGroup title="">
     	```tsx
-    	type SubmitHandler = (url: string, method: string, formData: FormData, orbitEntityData: Record<string, any>) => Promise<void>;
-    	type SetErrFn = (err: Error) => void;
+    	type SubmitHandler = (url: string, method: string, formData: FormData, orbitEntityData: Record<string, any>) => Promise<unknown>;
+    	type SetErrorFn = (err: Error) => void;
 
     	function useOrbitIframeFileTransferReceiver(submitHandler: SubmitHandler): {
     		readonly error: Maybe<Error>,
@@ -161,7 +157,7 @@ const App = () => {
     		readonly orbitEntityData: Record<string, any>,
     		readonly orbitFileId: string | undefined,
     		readonly progress: number | undefined,
-    		readonly setError: (err: Error) => void,
+    		readonly setError: SetErrorFn,
     		readonly status: 'initial' | 'transfering' | 'complete' | 'error',
     	};
     	```
@@ -169,3 +165,196 @@ const App = () => {
     </Col>
 
 </Row>
+
+---
+
+### `submitHandler` {{ tag: 'INPUT', label: 'SubmitHandler' }}
+
+The submit handler will be called when all input fields are validated, such as input fields are declared `required` should have a value
+and date inputs should be valid and so on. The `submitHandler` is responsible for make the HTTP request containing the file and all the required meta data to the external system.
+It should return a `Promise` that resolves once the request is successful, and the library will take care of contacting the sender, that the file transmission and form submission was successful.
+The `Promise` should reject if the form submission requests fails, and the library will send a copy of the error to the sender, to notify Orbit that the file transfer and form submission was unsuccessful.
+
+```tsx
+function submitHandler(
+	url: string,
+	method: string,
+	formData: FormData,
+	orbitEntityData: Record<string, any>,
+): Promise<unknown> {
+	const request = new Request(url, {
+		body: formData,
+		method: method,
+	});
+
+	const response = await fetch(request);
+	if (!response.ok) {
+		throw new Error(
+			'Upload was unsuccesful, please contact external system administrator at support@external.system with details on how to reproduce this error.',
+		);
+	}
+}
+
+function App() {
+	const receiver = useOrbitIframeFileTransferReceiver(submitHandler);
+	return (
+		<form ... onSubmit={receiver.onSubmit} ref={receiver.formRef}>
+			...
+		</form>
+	);
+}
+```
+
+### `formRef` {{ tag: 'OUTPUT', label: 'React.RefObject<HTMLFormElement>' }}
+
+It should be passed to the `ref` prop of the form element, in order for the receiver logic
+to set meta data on the form element that will be used upon submission by the `submitHandler`.
+
+```tsx
+const { formRef, ... } = useOrbitIframeFileTransferReceiver(...);
+
+return (
+	<form action="/upload" encType="multipart/form-data" method="post" ref={formRef}>
+		...
+	</form>
+);
+```
+
+### `onSubmit` {{ tag: 'OUTPUT', label: 'React.FormEventHandler<HTMLFormElement>' }}
+
+This handler must be passed to the `onSubmit` prop of the form element, this will intercept the
+form submission when the form is validated, and assemble and patch up the form data, before handing of the
+submission to the `submitHandler` that was passed as input to the hook.
+
+```tsx
+const { onSubmit, ... } = useOrbitIframeFileTransferReceiver(...);
+
+return (
+	<form action="/upload" encType="multipart/form-data" method="post" onSubmit={onSubmit}>
+		...
+	</form>
+);
+```
+
+### `error` {{ tag: 'OUTPUT', label: 'Error | null' }}
+
+Error object has a value when an error occurs with file transfer or if the `submitHandler` fails.
+
+```tsx
+const { error } = useOrbitIframeFileTransferReceiver(
+	onOrbitFileReceiverFormSubmit,
+);
+
+const errorContainer = error == null ? null : <div>{error.message}</div>;
+
+return (
+	<div>
+		{errorContainer}
+		<form></form>
+	</div>
+);
+```
+
+### `file` {{ tag: 'OUTPUT', label: 'File | null' }}
+
+A browser/DOM [File](https://developer.mozilla.org/en-US/docs/Web/API/File) object, representing the file transfered from the sender.
+The object becomes available when the transfer from the sender is completed.
+
+### `fileInputRef` {{ tag: 'OUTPUT', label: 'React.RefObject<HTMLInputElement>' }}
+
+The id of the file from Orbit, that should be used by the external system to update the file in Orbit after processing it via the Orbit importer.
+
+```tsx
+const { orbitFileId, ... } = useOrbitIframeFileTransferReceiver(...);
+
+return (
+    <form>
+        <input type="hidden" name="orbitFileId" required />
+    </form>
+);
+```
+
+### `imageSrc` {{ tag: 'OUTPUT', label: 'string | undefined' }}
+
+Image src useful for preview of image, will have a value when `status` is `complete` and the file that is an image supported by the browser.
+
+```tsx
+const { imageSrc, ... } = useOrbitIframeFileTransferReceiver(...);
+return (
+    <img src={imageSrc} />
+);
+```
+
+### `onCancel` {{ tag: 'OUTPUT', label: 'React.MouseEventHandler<HTMLInputElement>' }}
+
+The cancel handler that tells the host (sender), that the operation has been cancelled by the user.
+
+```tsx
+const { onCancel, ... } useOrbitIframeFileTransferReceiver(...);
+return (
+	<form>
+		<input type="button" value="Cancel" onClick={onCancel} />
+	</form>
+);
+```
+
+### `orbitEntityData` {{ tag: 'OUTPUT', label: 'Rcord<string, any>' }}
+
+Meta about the, entity and the user that uploaded the file, sent from Orbit a long with the file. The `orbitEntityData` is available when `state` is `transfering` or `complete`.
+
+If the users should not be able to edit the values, you could use the `readOnly` property, beware values from `disabled` input elements will not be present in `formData` upon submission.
+
+Input elements with `type=hidden` can also be used, if it doesn't matter if the users are able to see the values.
+
+```tsx
+const { orbitEntityData, ... } = useOrbitIframeFileTransferReceiver(...);
+return (
+	<form>
+		<input type="text" readOnly name="projectName" value={orbitEntityData.projectName} />
+	</form>
+);
+```
+
+### `orbitFileId` {{ tag: 'OUTPUT', label: 'string | undefined' }}
+
+The id of the file from Orbit, that should be used by the external system to update the file in Orbit after processing it via the Orbit importer.
+
+The value in the `[name]` attribute controls the field name in the form submission to the external system.
+
+```tsx
+const { orbitFileId, ... } = useOrbitIframeFileTransferReceiver(...);
+
+return (
+	<form>
+		<input type="hidden" name="orbitFileId" value={orbitFileId} readOnly required />
+	</form>
+);
+```
+
+### `progress` {{ tag: 'OUTPUT', label: 'number | undefined' }}
+
+The file transfer progress percentage between the sender and the receiver (iframe).
+
+```tsx
+const { progress, ... } = useOrbitIframeFileTransferReceiver(...);
+return (
+	<progress ref={progress} value={progress} max="100" />
+);
+```
+
+### `setError` {{ tag: 'OUTPUT', label: 'SetErrorFn' }}
+
+`setError` can be used to set custom errors and make them available in the error property, and change the [`status`](#status) to `error`.
+
+### `status` {{ tag: 'OUTPUT', label: 'initial | transfering | complete | error' }}
+
+Current status of the transmission from the sender to the receiver.
+
+Possible values are `initial`, `transfering`, `complete` and `error`.
+
+-   When `status` is `initial`, [`file`](#file), [`error`](#error), [`orbitFileId`](#orbitFileId) and [`progress`](#progress) are all `null` and has no value.
+-   When `status` is `error`, the [`error`](#error) property of the hook has a value.
+-   When `status` is `transfering`, the [`orbitFileId`](#orbitFileId), [`progress`](#progress) has values.
+-   When `status` is `complete`, the [`file`](#file) property has a value, `imageSrc` has a value if the file is an image supported by the browser.
+
+[`file`](#file) contains a browser/DOM [File](https://developer.mozilla.org/en-US/docs/Web/API/File) when the transfering from the sender (host/Orbit web client) is complete.

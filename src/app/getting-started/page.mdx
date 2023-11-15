@@ -1,98 +1,103 @@
 export const metadata = {
-	title: 'Quickstart',
+	title: 'Getting started',
 	description:
 		'This guide will get you all set up and ready to use the Protocol API. We’ll cover how to get started an API client and how to make your first API request.',
 };
 
-# Quickstart
+# Getting started
 
-This guide will get you all set up and ready to use the Protocol API. We'll cover how to get started using one of our API clients and how to make your first API request. We'll also look at where to go next to find all the information you need to take full advantage of our powerful REST API. {{ className: 'lead' }}
+This guide will get you all set up and ready to use the Orbit Iframe File Transfer library. The library covers both the sender and receiver part. We'll cover how to get started using the receiver API as the sender part is usually done/implemented by the Orbit web client, and mostly doens't concern 3rd party implementers. We'll look at how you can get started using the vanilla JS variant of the API which is based on declarative HTML data-attributes, which is simlified and bit limited in control, but is simple to get started with. We also have an example of how to use it in context of React, and it is also possible to have full control, but that require a bit more boilerplate setup.
 
 <Note>
-	Before you can make requests to the Protocol API, you will need to grab your
-	API key from your dashboard. You find it under [Settings &raquo; API](#).
+	Before you can get started, you need to make sure to that the server serving
+	the iframe allows cross-site requests, if you don't do this the browser
+	won't load the iframe. See [Cross-Origin Resource Sharing
+	(CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) for more
+	information.
 </Note>
 
-## Choose your client
+## Playground
 
-Before making your first API request, you need to pick which API client you will use. In addition to good ol' cURL HTTP requests, Protocol offers clients for JavaScript, Python, and PHP. In the following example, you can see how to install each client.
+You can use the online sender playground when you want to simulate an Orbit sender integration. Or you can host your own by cloing the github repository.
 
 <CodeGroup>
 
-```bash {{ title: 'cURL' }}
-# cURL is most likely already installed on your machine
-curl --version
+```bash {{ title: 'git', language: 'bash' }}
+# Clone the repository using git.
+git clone https://github.com/orbit-online/iframe-file-transfer
 ```
 
-```bash {{ language: 'js' }}
-# Install the Protocol JavaScript SDK
-npm install @example/protocol-api --save
-```
-
-```bash {{ language: 'python' }}
-# Install the Protocol Python SDK
-pip install protocol_api
-```
-
-```bash {{ language: 'php' }}
-# Install the Protocol PHP SDK
-composer require protocol/sdk
+```bash {{ title: 'GitHub CLI', language: 'bash' }}
+# Clone the repository using the GitHub CLI.
+gh repo clone orbit-online/iframe-file-transfer
 ```
 
 </CodeGroup>
 
 <div className="not-prose">
-	<Button href="/sdks" variant="text" arrow="right">
-		<>Check out our list of first-party SDKs</>
+	<Button
+		href="https://orbit-online.github.io/iframe-file-transfer/playground.html"
+		variant="text"
+		arrow="right"
+	>
+		<>Check out the online playground</>
 	</Button>
 </div>
 
-## Making your first API request
+## Making your first reciever
 
-After picking your preferred client, you are ready to make your first call to the Protocol API. Below, you can see how to send a GET request to the Conversations endpoint to get a list of all your conversations. In the cURL example, results are limited to ten conversations, the default page length for each client.
+You can start out small with just plain html file and the library hosted on a [CDN](https://en.wikipedia.org/wiki/Content_delivery_network) like [unpkg.com](https://unpkg.com/@orbit-online/iframe-file-transfer/),
+this is great for getting started.
 
-<CodeGroup tag="GET" label="/v1/conversations">
+<CodeGroup label="Using unpkg as CDN from the HTML source file.">
 
-```bash {{ title: 'cURL' }}
-curl -G https://api.protocol.chat/v1/conversations \
-  -H "Authorization: Bearer {token}" \
-  -d limit=10
+{/* prettier-ignore */}
+```html {{ title: 'iframe.html', language: 'html' }}
+<!doctype html>
+<html lang="en">
+<head>
+	<script type="module" src="https://unpkg.com/@orbit-online/iframe-file-transfer@latest/vanilla/receiver.js"></script>
+	<script type="module">
+		globalThis.onSubmit = async function onSubmit(url, method, formData, orbitEntityData) {
+			// submit logic goes here.
+		}
+	</script>
+</head>
+<body>
+	<form enctype="multipart/form-data" action="/upload" method="post" data-orbit-file-receiver="onSubmit">
+		<div data-orbit-file-receiver-error-container></div>
+		<input type="hidden" name="orbitFileId" data-orbit-file-receiver-file-id required />
+		<input name="file" type="file" data-orbit-file-receiver-input />
+		<input type="submit" value="Upload" />
+	</form>
+</body>
 ```
 
-```js
-import ApiClient from '@example/protocol-api';
-
-const client = new ApiClient(token);
-
-await client.conversations.list();
-```
-
-```python
-from protocol_api import ApiClient
-
-client = ApiClient(token)
-
-client.conversations.list()
-```
-
-```php
-$client = new \Protocol\ApiClient($token);
-
-$client->conversations->list();
+```bash {{ title: 'Serve', language: 'shell' }}
+npx serve
 ```
 
 </CodeGroup>
 
-<div className="not-prose">
-	<Button href="/conversations" variant="text" arrow="right">
-		<>Read the docs for the Conversations endpoint</>
-	</Button>
-</div>
+You should be able to type in `http://localhost:3000/iframe.html` in the [playground](https://orbit-online.github.io/iframe-file-transfer/playground.html?iframeUrl=http://localhost:3000/iframe.html) and start testing.
+
+However we'll recommend either downloading the needed library files you need and ship them bundled, or using a package manager like [npm](https://npmjs.com) or [yarn](https://yarnpkg.com) to manage it as a dependency.
+
+<CodeGroup tag="INSTALL" label="dependency">
+
+```bash {{ title: 'npm', language: 'shell' }}
+npm install --save @orbit-online/iframe-file-transfer
+```
+
+```bash {{ title: 'yarn', language: 'shell '}}
+yarn add @orbit-online/iframe-file-transfer
+```
+
+</CodeGroup>
 
 ## What's next?
 
-Great, you're now set up with an API client and have made your first request to the API. Here are a few links that might be handy as you venture further into the Protocol API:
+Great, you're have now implemented your first receiver, and tried in the playground.
 
--   [Grab your API key from the Protocol dashboard](#)
--   [Check out the Conversations endpoint](/conversations)
--   [Learn about the different error messages in Protocol](/errors)
+-   [Check out the currently supported libraries](/sdks)
+-   [Explore the examples on Github](https://github.com/orbit-online/iframe-file-transfer/tree/master/public/examples)

@@ -52,7 +52,7 @@ export function Anchor({
 	return (
 		<Link
 			href={`#${id}`}
-			className="group text-inherit no-underline hover:text-inherit"
+			className="group text-inherit no-underline hover:text-inherit dark:text-zinc-300"
 		>
 			{inView && (
 				<div className="absolute ml-[calc(-1*var(--width))] mt-1 hidden w-[var(--width)] opacity-0 transition [--width:calc(2.625rem+0.5px+50%-min(50%,calc(theme(maxWidth.lg)+theme(spacing.8))))] group-hover:opacity-100 group-focus:opacity-100 md:block lg:z-50 2xl:[--width:theme(spacing.10)]">

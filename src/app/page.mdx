@@ -1,5 +1,3 @@
-import { Concepts } from '@/components/Concepts';
-// import { Resources } from '@/components/Resources';
 import { HeroPattern } from '@/components/HeroPattern';
 
 export const metadata = {
@@ -7,11 +5,6 @@ export const metadata = {
 	description:
 		'Learn how to integrate assets origining in Orbit into you digital assets management system.',
 };
-
-export const sections = [
-	{ title: 'Concepts', id: 'concepts' },
-	{ title: 'Resources', id: 'resources' },
-];
 
 <HeroPattern />
 
@@ -23,7 +16,7 @@ This library is typically used for transfering files, users has provided via inp
 	<Button href="/getting-started" arrow="right">
 		<>Getting started</>
 	</Button>
-	<Button href="/libraries" variant="outline">
+	<Button href="/sdks" variant="outline">
 		<>Libraries</>
 	</Button>
 </div>
@@ -32,10 +25,6 @@ This library is typically used for transfering files, users has provided via inp
 
 Browsers doesn't simply allow moving the protected File objects between browser contexts. It seems that ServiceWorkers support this to some extent, but it is not supported in iframes. {{ className: 'lead' }}
 
-<div className="not-prose">
-	<Button href="/sdks" variant="text" arrow="right">
-		<>Get your API key</>
-	</Button>
-</div>
+This library chunks the file and serializes the content of the protected File objects (sender) that originates from `<input type="file" />` input elements, and transfer the chunks to the iframe (receiver) for deserialization and re-assembly.
 
-<Concepts />
+Though it is not possible to make the re-assembled file appear to the BrowserContext (iframe) as a trusted File, this library facilitates orchestration for mimicking the browsers behavior in a way that it feels close (enough).

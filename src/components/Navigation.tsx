@@ -254,10 +254,6 @@ export const navigation: Array<NavGroup> = [
 			{ title: 'Introduction', href: '/' },
 			{ title: 'Getting started', href: '/getting-started' },
 			{ title: 'SDKs', href: '/sdks' },
-			{ title: 'Authentication', href: '/authentication' },
-			{ title: 'Pagination', href: '/pagination' },
-			{ title: 'Errors', href: '/errors' },
-			{ title: 'Webhooks', href: '/webhooks' },
 		],
 	},
 	{
@@ -287,7 +283,7 @@ export function Navigation(props: React.ComponentPropsWithoutRef<'nav'>) {
 					href="https://github.com/orbit-online/iframe-file-transfer"
 				>
 					<span>Github repository</span>
-					<GitHubIcon className="h-5 w-5 fill-zinc-700 transition group-hover:fill-zinc-900 dark:group-hover:fill-zinc-500" />
+					<GitHubIcon className="h-5 w-5 fill-zinc-700 transition group-hover:fill-zinc-900 dark:fill-zinc-400 dark:group-hover:fill-zinc-500" />
 				</TopLevelNavItem>
 				<TopLevelNavItem href="/">API</TopLevelNavItem>
 				{navigation.map((group, groupIndex) => (

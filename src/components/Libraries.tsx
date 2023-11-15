@@ -2,47 +2,31 @@ import Image from 'next/image';
 
 import { Button } from '@/components/Button';
 import { Heading } from '@/components/Heading';
-import logoGo from '@/images/logos/go.svg';
-import logoNode from '@/images/logos/node.svg';
-import logoPhp from '@/images/logos/php.svg';
-import logoPython from '@/images/logos/python.svg';
-import logoRuby from '@/images/logos/ruby.svg';
+import logoJavascript from '@/images/logos/javascript.svg';
+import logoReact from '@/images/logos/react.svg';
 
 const libraries = [
 	{
 		href: '#',
-		name: 'PHP',
+		name: 'Vanilla JS',
 		description:
 			'A popular general-purpose scripting language that is especially suited to web development.',
-		logo: logoPhp,
+		logo: logoJavascript,
+		links: [
+			{ href: '/api/vanilla/receiver', title: 'Receiver' },
+			{ href: '/api/vanilla/sender', title: 'Sender' },
+		],
 	},
 	{
 		href: '#',
-		name: 'Ruby',
+		name: 'React',
 		description:
 			'A dynamic, open source programming language with a focus on simplicity and productivity.',
-		logo: logoRuby,
-	},
-	{
-		href: '#',
-		name: 'Node.js',
-		description:
-			'Node.js® is an open-source, cross-platform JavaScript runtime environment.',
-		logo: logoNode,
-	},
-	{
-		href: '#',
-		name: 'Python',
-		description:
-			'Python is a programming language that lets you work quickly and integrate systems more effectively.',
-		logo: logoPython,
-	},
-	{
-		href: '#',
-		name: 'Go',
-		description:
-			'An open-source programming language supported by Google with built-in concurrency.',
-		logo: logoGo,
+		logo: logoReact,
+		links: [
+			{ href: '/api/react/receiver', title: 'Receiver' },
+			{ href: '/api/react/sender', title: 'Sender' },
+		],
 	},
 ];
 
@@ -65,15 +49,19 @@ export function Libraries() {
 							<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
 								{library.description}
 							</p>
-							<p className="mt-4">
-								<Button
-									href={library.href}
-									variant="text"
-									arrow="right"
-								>
-									Read more
-								</Button>
-							</p>
+							<ul>
+								{library.links.map((link) => (
+									<li key={link.href}>
+										<Button
+											variant="text"
+											arrow="right"
+											href={link.href}
+										>
+											{link.title}
+										</Button>
+									</li>
+								))}
+							</ul>
 						</div>
 						<Image
 							src={library.logo}

@@ -90,7 +90,7 @@ export const Header = forwardRef<
 							href="https://github.com/orbit-online/iframe-file-transfer"
 						>
 							<span className="sr-only">Github repository</span>
-							<GitHubIcon className="h-5 w-5 fill-zinc-700 transition group-hover:fill-zinc-900 dark:group-hover:fill-zinc-500" />
+							<GitHubIcon className="h-5 w-5 fill-zinc-700 transition group-hover:fill-zinc-900 dark:fill-zinc-400 dark:group-hover:fill-zinc-500" />
 						</TopLevelNavItem>
 					</ul>
 				</nav>
